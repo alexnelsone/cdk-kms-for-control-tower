@@ -1,0 +1,72 @@
+repos:
+  ## GENERAL
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: ["--unsafe"]
+      - id: check-json
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: no-commit-to-branch
+      - id: pretty-format-json
+        args: ["--autofix", --no-sort-keys, --no-ensure-ascii]
+
+  # SECURITY
+  - repo: https://github.com/PyCQA/bandit
+    rev: "1.7.4"
+    hooks:
+      - id: bandit
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.0
+    hooks:
+      - id: python-safety-dependencies-check
+        args: [--ignore=1 ]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+
+  ## PYTHON
+  - repo: https://github.com/myint/autoflake
+    rev: v2.0.1
+    hooks:
+      - id: autoflake
+        args:
+          [
+            "--in-place",
+            "--remove-all-unused-imports",
+            "--remove-unused-variable",
+          ]
+
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        exclude: contrib
+        args: ["--ignore=E266,W503,E203,E501,W605"]
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: bash -c 'pylint --disable=W,C,R,E -j 0 -rn -sn cdk_kms_for_control_tower/'
+        language: system
+
+      - id: safety
+        name: safety
+        description: "Safety is a tool that checks your installed dependencies for known security vulnerabilities"
+        entry: bash -c 'safety check'
+        language: system
